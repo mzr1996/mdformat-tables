@@ -8,6 +8,7 @@ from mdformat.renderer.typing import Postprocess, Render
 def update_mdit(mdit: MarkdownIt) -> None:
     """Update the parser, e.g. by adding a plugin: `mdit.use(myplugin)`"""
     mdit.enable("table")
+    mdit.normalizeLink = lambda x: x
 
 
 def _refine_width(head, widths):
