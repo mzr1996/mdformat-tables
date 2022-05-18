@@ -10,10 +10,23 @@ def update_mdit(mdit: MarkdownIt) -> None:
     mdit.enable("table")
 
 
+def _refine_width(head, widths):
+    MAX_WIDTH = 200  # the max width to pad in one line.
+    if sum(widths) < MAX_WIDTH or sum(len(text) for text in head) > MAX_WIDTH:
+        return widths
+    pad_widths = [width - len(text) for width, text in zip(widths, head)]
+    while sum(widths) > MAX_WIDTH:
+        shrink_idx = pad_widths.index(max(pad_widths))
+        widths[shrink_idx] -= 1
+        pad_widths[shrink_idx] -= 1
+    return widths
+
+
 def _to_string(
     rows: Sequence[Sequence[str]], align: Sequence[Sequence[str]], widths: Sequence[int]
 ) -> List[str]:
     lines = []
+    widths = _refine_width(rows[0], widths)
     lines.append(
         "| "
         + " | ".join(
